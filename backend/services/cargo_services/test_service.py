@@ -1,38 +1,14 @@
-from abc import ABC
-
-from models.input import BaseInput, LetterInput, BoxInput
-from models.output import Bill, BillItem, Route
-
 from datetime import datetime, timedelta
 
-class BaseService(ABC):
-    # should return at max 4 depending on the from and to services being availible
-    def search(self, input: BaseInput, current_price: float) -> list[Bill]:
-        ...
-    
-    def search_letter(self, letter_input: LetterInput):
-        return self.search(letter_input, self.get_letter_price(letter_input))
-    
-    def search_box(self, box_input: BoxInput):
-        return self.search(box_input, self.get_box_price(box_input))
-    
-    def get_to_address_price(self, input: BaseInput) -> float:
-        ...
-        
-    def get_from_address_price(self, input: BaseInput) -> float:
-        ...
-        
-    def get_letter_price(self, input: LetterInput) -> float:
-        ...
-    
-    def get_box_price(self, input: BoxInput) -> float:
-        ...
+from services.cargo_services.base import BaseService
 
-
+from models.output import Bill, BillItem, Route
+from models.input import BaseInput, LetterInput, BoxInput
 
 class TestService(BaseService):
     def __init__(
         self, 
+        name: str,
         from_price: float, 
         to_price: float,
         letter_price: float, 
@@ -46,6 +22,7 @@ class TestService(BaseService):
         self.letter_price = letter_price
         self.expected_time = expected_time
         self.distance_by_car = distance_by_car
+        self.name = name
     
     def get_letter_price(self, input: LetterInput) -> float:
         return self.letter_price
@@ -59,7 +36,12 @@ class TestService(BaseService):
     def get_from_address_price(self, input: BaseInput) -> float:
         return self.from_price
     
-    def search(self, input: BaseInput, current_price: float) -> list[Bill]:
+    def search(self, input: BaseInput) -> list[Bill]:
+        if BaseService.is_box_search(input=input):
+            current_price = self.get_box_price(input=input)
+        else:
+            current_price = self.get_letter_price(input=input)
+            
         def get_route(flag):
             return Route(
                     car_distance=self.distance_by_car * bool(not flag),
@@ -81,11 +63,12 @@ class TestService(BaseService):
             items = get_items(from_address, to_address)
             total = sum((i.price for i in items))
             return Bill(
+                service_name=self.name,
                 items=items,
                 total_price=total,
                 expected_time=self.expected_time,
-                from_address=False,
-                to_address=False,
+                from_address=from_address,
+                to_address=to_address,
                 to_route=get_route(from_address),
                 from_route=get_route(to_address)
             )
@@ -97,18 +80,19 @@ class TestService(BaseService):
             get_bill(True, True)
         ]
 
-def generate_random_services(n):
+def generate_random_services(service_count):
     import random
-    services = []
-    for _ in range(n):
-        from_price = round(random.uniform(10, 50), 2)
-        to_price = round(random.uniform(50, 200), 2)
-        letter_price = round(random.uniform(5, 20), 2)
-        box_price = round(random.uniform(10, 100), 2)
-        expected_time = datetime.now() + timedelta(days=random.randint(1, 10))
-        distance_by_car = timedelta(hours=random.randint(1, 20))
-
-        service = TestService(from_price, to_price, letter_price, box_price, expected_time, distance_by_car)
-        services.append(service)
     
+    services = [
+        TestService(
+            name=f"Test Service {i}",
+            from_price=round(random.uniform(10, 50), 2), 
+            to_price=round(random.uniform(50, 200), 2), 
+            letter_price=round(random.uniform(5, 20), 2), 
+            box_price=round(random.uniform(10, 100), 2), 
+            expected_time=datetime.now() + timedelta(days=random.randint(1, 10)),
+            distance_by_car=timedelta(hours=random.randint(1, 20))
+        ) for i in range(service_count)
+    ]
+
     return services

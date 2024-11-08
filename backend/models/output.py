@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+import uuid
 
 class BillItem(BaseModel):
     name: str
@@ -14,6 +15,8 @@ class Route(BaseModel):
 
 
 class Bill(BaseModel):
+    id: str = str(uuid.uuid4())
+    service_name: str
     items: list[BillItem] = []
     total_price: float = 0.0
     expected_time: datetime | None
@@ -22,3 +25,8 @@ class Bill(BaseModel):
     from_address: bool = False
     to_address: bool = False
     link: str | None = None
+    
+    def __lt__(self, other: "Bill") -> bool:
+        if not isinstance(other, Bill):
+            return NotImplemented
+        return self.id < other.id
