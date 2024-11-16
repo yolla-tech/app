@@ -4,6 +4,7 @@ import math
 
 from services.scraper.data_manager import ScrapperDataManager
 from services.scraper.payload_manager import ScrapperPayloadManager
+from services.scraper.exceptions import ScrapperException
 from models.scraper_payload import Payload
 
 class Scrapper:
@@ -57,7 +58,7 @@ class Scrapper:
         )
         
         if response.status_code != 200:
-            raise Exception(f"Failure, status code: {response.status_code}")
+            raise ScrapperException(f"Failure, status code: {response.status_code}")
         
         soup2 = BeautifulSoup(response.content, "html.parser")
         return self.__format_html(soup2.find("div", {"id": "hsonuc"}).contents)

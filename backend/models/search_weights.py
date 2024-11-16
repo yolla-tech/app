@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 from pydantic.functional_validators import AfterValidator, model_validator
 
-from typing_extensions import Annotated
-from typing_extensions import Self
+from typing_extensions import Annotated, Self
 
 def check_between_value_validity(v: float) -> float:
     assert 0.0 <= v <= 1.0, f'Search weight {v} is not in the range of 0 and 1'

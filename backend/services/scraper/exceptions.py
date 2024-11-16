@@ -1,0 +1,6 @@
+class ScrapperException(Exception):
+    ...
+
+
+class ScrapperPayloadValidationException(Exception):
+    ...
