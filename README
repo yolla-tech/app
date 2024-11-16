@@ -1,0 +1,12 @@
+To set up:
+
+Install Docker and run these:
+
+cd /Path/To/Yolla
+docker-compose build
+docker-compose up
+
+To Access:
+Frontend: http://0.0.0.0:3000
+Backend: http://0.0.0.0:8000
+Backend Docs: http://0.0.0.0:8000/docs
