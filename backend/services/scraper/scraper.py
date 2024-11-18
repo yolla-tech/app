@@ -61,4 +61,7 @@ class Scrapper:
             raise ScrapperException(f"Failure, status code: {response.status_code}")
         
         soup2 = BeautifulSoup(response.content, "html.parser")
-        return self.__format_html(soup2.find("div", {"id": "hsonuc"}).contents)
+        try:
+            return self.__format_html(soup2.find("div", {"id": "hsonuc"}).contents)
+        except:
+            return None

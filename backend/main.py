@@ -12,8 +12,7 @@ from services.scraper.exceptions import ScrapperPayloadValidationException, Scra
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
-    "http://0.0.0.0:3000",
+    "*"
 ]
 
 app.add_middleware(
@@ -28,7 +27,7 @@ controller = CargoSearchManager(services=[
     ScrapperService()
 ])
 
-@app.post("/search_letter")
+@app.post("/api/search_letter")
 def search_letter(letter: LetterInput, weights: SearchWeights) -> list[Bill]:
     try:
         return controller.letter_search(letter, weights)
@@ -37,7 +36,7 @@ def search_letter(letter: LetterInput, weights: SearchWeights) -> list[Bill]:
     except ScrapperException as e:
         raise HTTPException(500, detail=f"Scrapper server error: {e}")    
 
-@app.post("/search_box")
+@app.post("/api/search_box")
 def search_box(box: BoxInput, weights: SearchWeights) -> list[Bill]:
     try:
         return controller.box_search(box, weights)

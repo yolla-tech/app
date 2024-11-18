@@ -18,12 +18,12 @@ class ScrapperPayloadManager:
         if payload.type == "box" and (payload.weight is None or payload.width is None or payload.length is None):
             raise ScrapperPayloadValidationException(f"Box must have weight, width, and height: Type->{payload.type} Width->{payload.width} Height->{payload.height} Length->{payload.length}")
 
-        city_a: int = self.scrapper_data.cities.get(payload.city_a)
+        city_a: int = self.scrapper_data.cities.get(payload.city_a.lower())
         
         if city_a is None:
             raise ScrapperPayloadValidationException(f"Could not find city a: {payload.city_a}")
         
-        city_b: int = self.scrapper_data.cities.get(payload.city_b)
+        city_b: int = self.scrapper_data.cities.get(payload.city_b.lower())
         
         if city_a is None:
             raise ScrapperPayloadValidationException(f"Could not find city a: {payload.city_a}")
