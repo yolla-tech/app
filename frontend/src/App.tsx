@@ -104,7 +104,7 @@ const App: React.FC = () => {
       properties: boxProperties,
     };
 
-    return axios.post("http://127.0.0.1:8000/search_box", {
+    return axios.post("https://key-anemone-full.ngrok-free.app/api/search_box", {
       box: boxInput,
       weights: getSearchWeights(),
     });
@@ -118,7 +118,7 @@ const App: React.FC = () => {
       extra_services: [],
     };
 
-    return axios.post("http://127.0.0.1:8000/search_letter", {
+    return axios.post("https://key-anemone-full.ngrok-free.app/api/search_letter", {
       letter: letterInput,
       weights: getSearchWeights(),
     });
