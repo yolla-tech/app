@@ -43,4 +43,4 @@ def search_box(box: BoxInput, weights: SearchWeights) -> list[Bill]:
     except ScrapperPayloadValidationException as e:
         raise HTTPException(422, detail=f"Payload validation error: {e}")
     except ScrapperException as e:
-        raise HTTPException(500, detail=f"Scrapper server error: {e}")    
+        raise HTTPException(500, detail=f"Scrapper server error: {e}")
