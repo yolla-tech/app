@@ -44,7 +44,7 @@ const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
       </p>
       <div className="route-info">
         <p>
-          <strong>To Route:</strong>
+          <strong>Travel Distance to the nearest branch:</strong>
         </p>
         <p>Walk Distance: {formatDuration(service.to_route.walk_distance)}</p>
         <p>
@@ -55,7 +55,7 @@ const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
       </div>
       <div className="route-info">
         <p>
-          <strong>From Route:</strong>
+          <strong>Travel Distance from the nearest branch:</strong>
         </p>
         <p>Walk Distance: {formatDuration(service.from_route.walk_distance)}</p>
         <p>
@@ -152,7 +152,7 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <Toaster />
-      <h1>Cargo Service Price Listing</h1>
+      <h1>Yolla.tech</h1>
       <div className="mode-selector">
         <button
           className={`mode-button ${mode === "letter" ? "active" : ""}`}
@@ -169,7 +169,7 @@ const App: React.FC = () => {
       </div>
       <div className="form">
         <label>
-          From Location (Location A):
+          From City:
           <input
             type="text"
             value={locationA}
@@ -177,7 +177,7 @@ const App: React.FC = () => {
           />
         </label>
         <label>
-          To Location (Location B):
+          To City:
           <input
             type="text"
             value={locationB}
