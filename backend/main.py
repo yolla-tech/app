@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.input import LetterInput, BoxInput, TrackerInput
+from models.input import LetterInput, BoxInput, TrackByNameInput, TrackByIdInput
 from models.output import Bill
 from models.search_weights import SearchWeights
 from models.register_user import RegisterUserModel
@@ -64,9 +64,23 @@ def login(user: LoginUserModel, db: Session = Depends(get_db)):
     ...
 
 
-@app.post("/track")
-def track(input: TrackerInput):
-    return tracker.get_status(
+@app.post("/track_by_name")
+def track_by_name(input: TrackByNameInput):
+    return tracker.get_status_by_name(
         tracking_code=input.tracking_code,
-        company_id=input.company_id
+        company=input.company_name
     )
+    
+
+@app.post("/track_by_id")
+def track_by_id(input: TrackByIdInput):
+    return tracker.get_status_by_name(
+        tracking_code=input.tracking_code,
+        company=input.company_id
+    )
+    
+    
+
+@app.get("/tacked_companies")
+def tracked_companies():
+    return tracker.get_companies()

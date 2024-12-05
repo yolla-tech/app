@@ -36,6 +36,11 @@ class BoxInput(BaseInput):
     properties: BoxProperties
     
     
-class TrackerInput(BaseModel):
+class TrackByNameInput(BaseModel):
+    tracking_code: str
+    company_name: str
+    
+
+class TrackByIdInput(BaseModel):
     tracking_code: str
     company_id: int
