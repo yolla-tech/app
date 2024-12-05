@@ -74,9 +74,9 @@ def track_by_name(input: TrackByNameInput):
 
 @app.post("/track_by_id")
 def track_by_id(input: TrackByIdInput):
-    return tracker.get_status_by_name(
+    return tracker.get_status_by_id(
         tracking_code=input.tracking_code,
-        company=input.company_id
+        company_id=input.company_id
     )
     
     
