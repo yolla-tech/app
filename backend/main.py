@@ -12,20 +12,25 @@ from services.scraper.exceptions import ScrapperPayloadValidationException, Scra
 app = FastAPI()
 
 origins = [
-    "*"
+    "https://yolla.tech",
+    "https://www.yolla.tech",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"], 
+    allow_headers=["Content-Type", "Authorization"]
 )
 
 controller = CargoSearchManager(services=[
     ScrapperService()
 ])
+
+@app.get("/")
+async def root():
+    return {"message": "CORS is configured!"}
 
 @app.post("/api/search_letter")
 def search_letter(letter: LetterInput, weights: SearchWeights) -> list[Bill]:
