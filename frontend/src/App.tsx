@@ -10,6 +10,8 @@ import {
 import { FaEnvelope, FaBox } from "react-icons/fa";
 import "./App.css";
 import { Toaster, toast } from "react-hot-toast";
+import browser from "webextension-polyfill";
+
 
 const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
   const formatDuration = (duration: string): string => {
