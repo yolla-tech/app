@@ -1,26 +1,34 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - echo "Starting pre-build phase..."
-        - sudo yum update -y
-        - sudo yum install -y docker
-        - sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        - sudo chmod +x /usr/local/bin/docker-compose
-        - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-        - sudo systemctl start docker
-        - docker-compose --version
-    build:
-      commands:
-        - echo "Starting build phase..."
-        - docker-compose build
-        - docker-compose up -d
-  artifacts:
-    baseDirectory: ./frontend/build
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - backend/.venv/**/*
+
+applications:
+  - appRoot: .
+    backend:
+      phases:
+        preBuild:
+          commands:
+            # Show docker-compose version
+            - docker-compose version
+            # Build both backend & frontend images from docker-compose
+            - docker-compose build
+        build:
+          commands:
+            # (Optional) Run tests against the backend container if desired
+            # e.g. docker-compose run --rm backend pytest --maxfail=1 --disable-warnings
+
+            # Install dependencies & build the frontend
+            - docker-compose run --rm frontend npm install
+            - docker-compose run --rm frontend npm run build
+    frontend:
+      phases:
+        preBuild:
+          commands: []
+        build:
+          commands: []
+      artifacts:
+        # This is where Amplify will look for the static files to deploy
+        baseDirectory: frontend/build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - frontend/node_modules/**/*
