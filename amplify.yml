@@ -4,6 +4,13 @@ frontend:
     preBuild:
       commands:
         - echo "Starting pre-build phase..."
+        # Install Docker and Docker Compose
+        - sudo apt-get update
+        - sudo apt-get install -y docker.io
+        - sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        - sudo chmod +x /usr/local/bin/docker-compose
+        - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose  # Ensure it is globally accessible
+        - docker-compose --version  # Confirm Docker Compose installation
     build:
       commands:
         - echo "Starting build phase..."
@@ -17,5 +24,3 @@ frontend:
     paths:
       - frontend/node_modules/**/*
       - backend/.venv/**/*
-  environment:
-    image: "docker/compose:1.29.2"
