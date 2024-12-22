@@ -6,16 +6,16 @@ applications:
       phases:
         preBuild:
           commands:
-            # Show docker-compose version
+            - apt-get update && apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+            - curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+            - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+            - apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+            - curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+            - chmod +x /usr/local/bin/docker-compose
             - docker-compose version
-            # Build both backend & frontend images from docker-compose
             - docker-compose build
         build:
           commands:
-            # (Optional) Run tests against the backend container if desired
-            # e.g. docker-compose run --rm backend pytest --maxfail=1 --disable-warnings
-
-            # Install dependencies & build the frontend
             - docker-compose run --rm frontend npm install
             - docker-compose run --rm frontend npm run build
     frontend:
@@ -25,7 +25,6 @@ applications:
         build:
           commands: []
       artifacts:
-        # This is where Amplify will look for the static files to deploy
         baseDirectory: frontend/build
         files:
           - '**/*'
