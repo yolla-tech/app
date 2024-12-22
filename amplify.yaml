@@ -4,39 +4,18 @@ frontend:
     preBuild:
       commands:
         - echo "Starting pre-build phase..."
-        # Install Docker Compose if not available
-        - sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        - sudo chmod +x /usr/local/bin/docker-compose
-        - docker-compose --version  # Verify Docker Compose installation
     build:
       commands:
         - echo "Starting build phase..."
-        - docker-compose build  # Build Docker containers
-        - docker-compose up -d  # Start Docker containers in detached mode
+        - docker-compose build
+        - docker-compose up -d
   artifacts:
-    baseDirectory: ./frontend/build  # Adjust based on the output of your frontend build (e.g., React outputs to `build`)
-    files:
-      - '**/*'  # Specify which files to deploy for the frontend
-  cache:
-    paths:
-      - frontend/node_modules/**/*  # Cache frontend dependencies
-      - backend/.venv/**/*          # Cache backend dependencies (if applicable)
-
-backend:
-  phases:
-    preBuild:
-      commands:
-        - echo "Starting backend pre-build phase..."
-        - python3 --version  # Ensure Python is installed
-        - pip install --upgrade pip  # Upgrade pip if needed
-    build:
-      commands:
-        - echo "Starting backend build phase..."
-        - docker-compose build backend  # Build the backend service container
-  artifacts:
-    baseDirectory: ./backend  # Adjust if your backend has build artifacts
+    baseDirectory: ./frontend/build
     files:
       - '**/*'
   cache:
     paths:
-      - backend/.venv/**/*          # Cache Python virtual environment for backend
+      - frontend/node_modules/**/*
+      - backend/.venv/**/*
+  environment:
+    image: "docker/compose:1.29.2"
