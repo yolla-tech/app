@@ -37,8 +37,8 @@ export type BoxProperties = {
 
 // Base input type for search queries
 export type BaseInput = {
-  location_a: [number, number];
-  location_b: [number, number];
+  location_a: string;
+  location_b: string;
   servis_type?: string;
   extra_services?: string[];
 };

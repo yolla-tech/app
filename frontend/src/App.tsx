@@ -9,7 +9,7 @@ import {
   BoxInput,
   LetterInput,
   SelectedLocations,
-  ReverseGeocodeResponse
+  ReverseGeocodeResponse,
 } from "./types";
 
 import { Toaster, toast } from "react-hot-toast";
@@ -63,7 +63,7 @@ const fetchCitySuggestions = async (inputValue: string) => {
   const data = await response.json();
 
   return data.map((item: any) => ({
-    label: item.display_name,      // e.g. "Ankara, Turkey"
+    label: item.display_name, // e.g. "Ankara, Turkey"
     value: item.display_name,
     lat: item.lat,
     lon: item.lon,
@@ -96,15 +96,14 @@ function useOnScreen(ref: React.RefObject<HTMLDivElement>, rootMargin = "0px") {
   return isIntersecting;
 }
 
-const FadeInSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const FadeInSection: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref, "-100px");
 
   return (
-    <div
-      ref={ref}
-      className={`fade-in-section ${isVisible ? "visible" : ""}`}
-    >
+    <div ref={ref} className={`fade-in-section ${isVisible ? "visible" : ""}`}>
       {children}
     </div>
   );
@@ -135,12 +134,11 @@ const MapClickHandler: React.FC<{
           }
         );
 
-        const address =
-          response.data.address.city ||
-          response.data.address.town ||
-          response.data.address.village ||
-          response.data.address.hamlet ||
-          "Unknown Location";
+        const address = response.data.address.province;
+
+        if (!address) {
+          throw new Error("Could not get city");
+        }
 
         if (!selectedLocations.from) {
           setSelectedLocations({
@@ -213,7 +211,9 @@ const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
       </p>
 
       <div className="route-info">
-        <p><strong>Nereye (En Yakın Şube)</strong></p>
+        <p>
+          <strong>Nereye (En Yakın Şube)</strong>
+        </p>
         <p>Yürüyerek: {formatDuration(service.to_route.walk_distance)}</p>
         <p>
           Toplu Taşıma:{" "}
@@ -223,7 +223,9 @@ const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
       </div>
 
       <div className="route-info">
-        <p><strong>Nereden (En Yakın Şube)</strong></p>
+        <p>
+          <strong>Nereden (En Yakın Şube)</strong>
+        </p>
         <p>Yürüyerek: {formatDuration(service.from_route.walk_distance)}</p>
         <p>
           Toplu Taşıma:{" "}
@@ -250,10 +252,12 @@ const App: React.FC = () => {
     weight: 1,
   });
 
-  const [selectedLocations, setSelectedLocations] = useState<SelectedLocations>({
-    from: null,
-    to: null,
-  });
+  const [selectedLocations, setSelectedLocations] = useState<SelectedLocations>(
+    {
+      from: null,
+      to: null,
+    }
+  );
 
   // Weights for search
   const getSearchWeights = () => ({
@@ -270,14 +274,14 @@ const App: React.FC = () => {
   // Box search
   const handleBoxSearch = () => {
     const boxInput: BoxInput = {
-      location_a: (selectedLocations.from?.coords) || [39.92077, 32.85411],
-      location_b: (selectedLocations.to?.coords) || [39.92077, 32.85411],
+      location_a: selectedLocations.from!.address,
+      location_b: selectedLocations.to!.address,
       servis_type: "default",
       extra_services: [],
       properties: boxProperties,
     };
     return axios.post(
-      "https://key-anemone-full.ngrok-free.app/api/search_box",
+      "http://localhost:8000/search_box",
       {
         box: boxInput,
         weights: getSearchWeights(),
@@ -288,13 +292,13 @@ const App: React.FC = () => {
   // Letter search
   const handleLetterSearch = () => {
     const letterInput: LetterInput = {
-      location_a: selectedLocations.from?.coords || [39.92077, 32.85411],
-      location_b: selectedLocations.to?.coords || [39.92077, 32.85411],
+      location_a: selectedLocations.from!.address,
+      location_b: selectedLocations.to!.address,
       servis_type: "default",
       extra_services: [],
     };
     return axios.post(
-      "https://key-anemone-full.ngrok-free.app/api/search_letter",
+      "http://localhost:8000/search_letter",
       {
         letter: letterInput,
         weights: getSearchWeights(),
@@ -352,7 +356,11 @@ const App: React.FC = () => {
         {/* LEFT PANEL */}
         <div className="left-panel">
           <h1>
-            Selam <span role="img" aria-label="wave">👋</span> Nereye yollayalım?
+            Selam{" "}
+            <span role="img" aria-label="wave">
+              👋
+            </span>{" "}
+            Nereye yollayalım?
           </h1>
           <div className="mode-selector">
             <button
@@ -370,72 +378,72 @@ const App: React.FC = () => {
           </div>
 
           <div className="form">
-          <label>
-            Nereden?
-            <AsyncSelect
-              cacheOptions
-              loadOptions={fetchCitySuggestions}
-              placeholder="Bir konum secin"
-              defaultOptions
-              value={
-                selectedLocations.from
-                  ? {
-                      label: selectedLocations.from.address,
-                      value: selectedLocations.from.address,
-                      lat: selectedLocations.from.coords[0],
-                      lon: selectedLocations.from.coords[1],
-                    }
-                  : null
-              }
-              onChange={(selected: any) => {
-                if (!selected) return;
-                const { value, lat, lon } = selected;
+            <label>
+              Nereden?
+              <AsyncSelect
+                cacheOptions
+                loadOptions={fetchCitySuggestions}
+                placeholder="Bir konum secin"
+                defaultOptions
+                value={
+                  selectedLocations.from
+                    ? {
+                        label: selectedLocations.from.address,
+                        value: selectedLocations.from.address,
+                        lat: selectedLocations.from.coords[0],
+                        lon: selectedLocations.from.coords[1],
+                      }
+                    : null
+                }
+                onChange={(selected: any) => {
+                  if (!selected) return;
+                  const { value, lat, lon } = selected;
 
-                setSelectedLocations((prev) => ({
-                  ...prev,
-                  from: {
-                    coords: [parseFloat(lat), parseFloat(lon)],
-                    address: value,
-                  },
-                }));
+                  setSelectedLocations((prev) => ({
+                    ...prev,
+                    from: {
+                      coords: [parseFloat(lat), parseFloat(lon)],
+                      address: value,
+                    },
+                  }));
 
-                toast.success(`Nereden: ${value}`);
-              }}
-            />
-          </label>
+                  toast.success(`Nereden: ${value}`);
+                }}
+              />
+            </label>
 
             <label>
               Nereye?
               <AsyncSelect
-              cacheOptions
-              loadOptions={fetchCitySuggestions}
-              placeholder="Bir konum secin"
-              defaultOptions
-              value={
-                selectedLocations.to
-                  ? {
-                      label: selectedLocations.to.address,
-                      value: selectedLocations.to.address,
-                      lat: selectedLocations.to.coords[0],
-                      lon: selectedLocations.to.coords[1],
-                    }
-                  : null
-              }
-              onChange={(selected: any) => {
-                if (!selected) return;
-                const { value, lat, lon } = selected;
+                cacheOptions
+                loadOptions={fetchCitySuggestions}
+                placeholder="Bir konum secin"
+                defaultOptions
+                value={
+                  selectedLocations.to
+                    ? {
+                        label: selectedLocations.to.address,
+                        value: selectedLocations.to.address,
+                        lat: selectedLocations.to.coords[0],
+                        lon: selectedLocations.to.coords[1],
+                      }
+                    : null
+                }
+                onChange={(selected: any) => {
+                  if (!selected) return;
+                  const { value, lat, lon } = selected;
 
-                setSelectedLocations((prev) => ({
-                  ...prev,
-                  to: {
-                    coords: [parseFloat(lat), parseFloat(lon)],
-                    address: value,
-                  },
-                }));
+                  setSelectedLocations((prev) => ({
+                    ...prev,
+                    to: {
+                      coords: [parseFloat(lat), parseFloat(lon)],
+                      address: value,
+                    },
+                  }));
 
-                toast.success(`Nereye: ${value}`);
-              }}
-            />
+                  toast.success(`Nereye: ${value}`);
+                }}
+              />
             </label>
 
             {mode === "box" && (
