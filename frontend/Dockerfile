@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package.json and package-lock.json first (for better caching)
 COPY package.json package-lock.json ./
 
-# Install dependencies (only production dependencies to reduce image size)
-RUN npm ci --only=production
+# Install dependencies (omit dev dependencies for smaller image size)
+RUN npm ci --omit=dev
 
 # Copy the rest of the app's code
 COPY . .
