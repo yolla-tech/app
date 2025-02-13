@@ -1,23 +1,19 @@
-/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* BODY */
 body {
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
 }
 
-/* APP WRAPPER */
 .app {
   width: 100%;
   margin: 0 auto;
 }
 
-/* NAVBAR */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -35,7 +31,6 @@ body {
   color: #555;
 }
 
-/* CONTENT CONTAINER: left form, right map */
 .content-container {
   display: flex;
   flex-direction: row;
@@ -43,7 +38,6 @@ body {
   padding: 2rem;
 }
 
-/* LEFT PANEL */
 .left-panel {
   flex: 1;
   background-color: #fff;
@@ -52,7 +46,6 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Right panel = Map */
 .right-panel {
   flex: 1.5;
   border-radius: 8px;
@@ -60,14 +53,12 @@ body {
   min-height: 600px;
 }
 
-/* HEADINGS */
 .left-panel h1 {
   margin-bottom: 1rem;
   font-size: 1.75rem;
   color: #333;
 }
 
-/* MODE SELECTOR */
 .mode-selector {
   display: flex;
   margin-bottom: 1rem;
@@ -96,7 +87,6 @@ body {
   color: #fff;
 }
 
-/* FORM + LABELS */
 .form {
   margin-bottom: 1rem;
 }
@@ -116,7 +106,6 @@ body {
   cursor: pointer;
 }
 
-/* BOX PROPERTIES */
 .box-properties > label {
   margin-bottom: 0.5rem;
 }
@@ -129,7 +118,6 @@ body {
   width: 70px;
 }
 
-/* SEARCH BUTTON */
 .search-button {
   display: block;
   width: 100%;
@@ -145,7 +133,6 @@ body {
   background-color: #0056b3;
 }
 
-/* RESULTS */
 .cargo-prices h2 {
   margin-bottom: 1rem;
   color: #333;
@@ -176,7 +163,6 @@ body {
   border-radius: 4px;
 }
 
-/* BİZ KİMİZ SECTION */
 .biz-kimiz-section {
   background-color: #fff;
   margin: 2rem;
@@ -209,7 +195,6 @@ body {
   text-align: center;
 }
 
-/* FADE-IN SECTION */
 .fade-in-section {
   opacity: 0;
   transform: translateY(20px);
@@ -220,7 +205,6 @@ body {
   transform: translateY(0);
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .content-container {
     flex-direction: column;

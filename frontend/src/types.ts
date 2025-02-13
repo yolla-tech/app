@@ -1,19 +1,14 @@
-// types.ts
-
-// Represents the distance details for a route
 export type Route = {
   walk_distance: string;
   public_transport_distance: string;
   car_distance: string;
 };
 
-// Represents an item with a name and price
 export type Item = {
   name: string;
   price: number;
 };
 
-// Represents a cargo service with detailed information
 export type CargoService = {
   id: string;
   service_name: string;
@@ -22,12 +17,11 @@ export type CargoService = {
   expected_time: string | null;
   to_route: Route;
   from_route: Route;
-  from_address: boolean; // Indicates if the from address is set
-  to_address: boolean;   // Indicates if the to address is set
+  from_address: boolean; 
+  to_address: boolean;   
   link: string | null;
 };
 
-// Represents the properties of a box
 export type BoxProperties = {
   width: number;
   height: number;
@@ -35,7 +29,6 @@ export type BoxProperties = {
   weight: number;
 };
 
-// Base input type for search queries
 export type BaseInput = {
   location_a: [number, number];
   location_b: [number, number];
@@ -43,7 +36,6 @@ export type BaseInput = {
   extra_services?: string[];
 };
 
-// Input type for box searches, extending BaseInput with box properties
 export type BoxInput = BaseInput & {
   properties: BoxProperties;
 };
@@ -75,7 +67,6 @@ export type SelectedLocations = {
   to: Location | null;
 };
 
-// Represents the response from reverse geocoding API
 export type ReverseGeocodeResponse = {
   display_name: string;
   address: {
@@ -83,11 +74,11 @@ export type ReverseGeocodeResponse = {
     town?: string;
     village?: string;
     hamlet?: string;
-    [key: string]: any; // For any additional address components
+    [key: string]: any; 
   };
 };
 
 export type LocationOption = {
-  label: string; // Display name
-  value: Location; // Actual Location data
+  label: string; 
+  value: Location; 
 };

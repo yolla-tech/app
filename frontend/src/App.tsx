@@ -26,9 +26,6 @@ import customRedMarker from "./assets/marker-icon-red.png";
 import markerShadow from "./assets/marker-shadow.png";
 import "./App.css";
 
-////////////////////////////////////////////////////////////////////////
-// Leaflet Icon Fix
-////////////////////////////////////////////////////////////////////////
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -63,16 +60,13 @@ const fetchCitySuggestions = async (inputValue: string) => {
   const data = await response.json();
 
   return data.map((item: any) => ({
-    label: item.display_name,      // e.g. "Ankara, Turkey"
+    label: item.display_name,      
     value: item.display_name,
     lat: item.lat,
     lon: item.lon,
   }));
 };
 
-////////////////////////////////////////////////////////////////////////
-// Fade-In Hook & Component
-////////////////////////////////////////////////////////////////////////
 function useOnScreen(ref: React.RefObject<HTMLDivElement>, rootMargin = "0px") {
   const [isIntersecting, setIntersecting] = useState(false);
 
@@ -110,9 +104,6 @@ const FadeInSection: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   );
 };
 
-////////////////////////////////////////////////////////////////////////
-// Map Click Handler
-////////////////////////////////////////////////////////////////////////
 const MapClickHandler: React.FC<{
   setSelectedLocations: React.Dispatch<React.SetStateAction<SelectedLocations>>;
   selectedLocations: SelectedLocations;
@@ -123,7 +114,7 @@ const MapClickHandler: React.FC<{
       const coords: [number, number] = [lat, lng];
 
       try {
-        // Reverse Geocoding
+        //CONVERTING COORDINATES INTO READIBLE NAMES
         const response = await axios.get<ReverseGeocodeResponse>(
           "https://nominatim.openstreetmap.org/reverse",
           {
@@ -155,7 +146,6 @@ const MapClickHandler: React.FC<{
           });
           toast.success(`Nereye: ${address}`);
         } else {
-          // Reset if both are set
           setSelectedLocations({
             from: { coords, address },
             to: null,
@@ -178,9 +168,7 @@ const MapClickHandler: React.FC<{
   return null;
 };
 
-////////////////////////////////////////////////////////////////////////
-// CargoServiceCard
-////////////////////////////////////////////////////////////////////////
+//CARGO SERVICE
 const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
   const formatDuration = (duration: string): string => {
     const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
@@ -234,10 +222,7 @@ const CargoServiceCard: React.FC<{ service: CargoService }> = ({ service }) => {
     </div>
   );
 };
-
-////////////////////////////////////////////////////////////////////////
-// Main App
-////////////////////////////////////////////////////////////////////////
+// MAIN APP
 const App: React.FC = () => {
   const [cargoPrices, setCargoPrices] = useState<CargoService[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -330,16 +315,14 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  // Default map position
   const defaultPosition: [number, number] = selectedLocations.from
     ? selectedLocations.from.coords
-    : [39.92077, 32.85411]; // Center on Turkey (Ankara) if nothing selected
+    : [39.92077, 32.85411]; 
 
   return (
     <div className="app">
       <Toaster />
 
-      {/* NAVBAR */}
       <nav className="navbar">
         <div className="logo">yolla</div>
         <div className="user-icon">
@@ -347,9 +330,7 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* CONTENT - Form (Left), Map (Right) */}
       <div className="content-container">
-        {/* LEFT PANEL */}
         <div className="left-panel">
           <h1>
             Selam <span role="img" aria-label="wave">👋</span> Nereye yollayalım?
@@ -503,7 +484,6 @@ const App: React.FC = () => {
             {loading ? "Aranıyor..." : "ARA"}
           </button>
 
-          {/* RESULTS */}
           {cargoPrices.length > 0 && (
             <div className="cargo-prices">
               <h2>Mevcut Kargo Servisleri</h2>
@@ -514,7 +494,6 @@ const App: React.FC = () => {
           )}
         </div>
 
-        {/* RIGHT PANEL: MAP */}
         <div className="right-panel">
           <MapContainer
             center={defaultPosition}
@@ -551,7 +530,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* BİZ KİMİZ? SECTION (fade-in) */}
       <section className="biz-kimiz-section">
         <h2>Biz Kimiz?</h2>
         <div className="cards-container">
