@@ -1,0 +1,50 @@
+name: Docker Build Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate-dockerfiles:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [frontend, backend]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate ${{ matrix.service }} Dockerfile
+        uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.service }}
+          check: true
+          build-args: |
+            BUILDKIT_DOCKERFILE_CHECK=error=true
+
+  full-build-test:
+    needs: validate-dockerfiles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          load: true
+          tags: frontend:ci
+
+      - name: Build Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          load: true
+          tags: backend:ci
+
+      - name: Run Full Test
+        run: |
+          docker run --rm frontend:ci npm test
+          docker run --rm backend:ci pytest tests/

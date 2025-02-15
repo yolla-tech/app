@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# check=error=true
+
 FROM python:3.13-alpine
 WORKDIR /app
 

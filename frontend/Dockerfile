@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# check=error=true
+
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
