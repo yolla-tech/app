@@ -47,6 +47,11 @@
       "not dead",
       "not op_mini all"
     ],
+    "jest": {
+      "moduleNameMapper": {
+        "^axios$": "axios/dist/node/axios.cjs"
+      }
+    },
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
