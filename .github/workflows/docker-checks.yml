@@ -46,7 +46,7 @@ jobs:
           if [ "${{ matrix.service }}" = "frontend" ]; then
             docker run --rm frontend:ci npm test
           else
-            docker run --rm backend:ci pytest tests/
+            docker run --rm backend:ci pytest tests/ -v
           fi
 
   deploy:
