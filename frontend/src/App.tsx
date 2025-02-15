@@ -50,17 +50,17 @@ const fetchCitySuggestions = async (inputValue: string) => {
 
   const response = await fetch(
     `https://nominatim.openstreetmap.org/search?` +
-      new URLSearchParams({
-        q: inputValue,
-        format: "json",
-        addressdetails: "1",
-        limit: "5",
-      })
+    new URLSearchParams({
+      q: inputValue,
+      format: "json",
+      addressdetails: "1",
+      limit: "5",
+    })
   );
   const data = await response.json();
 
   return data.map((item: any) => ({
-    label: item.display_name,      
+    label: item.display_name,
     value: item.display_name,
     lat: item.lat,
     lon: item.lon,
@@ -317,7 +317,7 @@ const App: React.FC = () => {
 
   const defaultPosition: [number, number] = selectedLocations.from
     ? selectedLocations.from.coords
-    : [39.92077, 32.85411]; 
+    : [39.92077, 32.85411];
 
   return (
     <div className="app">
@@ -351,72 +351,72 @@ const App: React.FC = () => {
           </div>
 
           <div className="form">
-          <label>
-            Nereden?
-            <AsyncSelect
-              cacheOptions
-              loadOptions={fetchCitySuggestions}
-              placeholder="Bir konum secin"
-              defaultOptions
-              value={
-                selectedLocations.from
-                  ? {
+            <label>
+              Nereden?
+              <AsyncSelect
+                cacheOptions
+                loadOptions={fetchCitySuggestions}
+                placeholder="Bir konum secin"
+                defaultOptions
+                value={
+                  selectedLocations.from
+                    ? {
                       label: selectedLocations.from.address,
                       value: selectedLocations.from.address,
                       lat: selectedLocations.from.coords[0],
                       lon: selectedLocations.from.coords[1],
                     }
-                  : null
-              }
-              onChange={(selected: any) => {
-                if (!selected) return;
-                const { value, lat, lon } = selected;
+                    : null
+                }
+                onChange={(selected: any) => {
+                  if (!selected) return;
+                  const { value, lat, lon } = selected;
 
-                setSelectedLocations((prev) => ({
-                  ...prev,
-                  from: {
-                    coords: [parseFloat(lat), parseFloat(lon)],
-                    address: value,
-                  },
-                }));
+                  setSelectedLocations((prev) => ({
+                    ...prev,
+                    from: {
+                      coords: [parseFloat(lat), parseFloat(lon)],
+                      address: value,
+                    },
+                  }));
 
-                toast.success(`Nereden: ${value}`);
-              }}
-            />
-          </label>
+                  toast.success(`Nereden: ${value}`);
+                }}
+              />
+            </label>
 
             <label>
               Nereye?
               <AsyncSelect
-              cacheOptions
-              loadOptions={fetchCitySuggestions}
-              placeholder="Bir konum secin"
-              defaultOptions
-              value={
-                selectedLocations.to
-                  ? {
+                cacheOptions
+                loadOptions={fetchCitySuggestions}
+                placeholder="Bir konum secin"
+                defaultOptions
+                value={
+                  selectedLocations.to
+                    ? {
                       label: selectedLocations.to.address,
                       value: selectedLocations.to.address,
                       lat: selectedLocations.to.coords[0],
                       lon: selectedLocations.to.coords[1],
                     }
-                  : null
-              }
-              onChange={(selected: any) => {
-                if (!selected) return;
-                const { value, lat, lon } = selected;
+                    : null
+                }
+                onChange={(selected: any) => {
+                  if (!selected) return;
+                  const { value, lat, lon } = selected;
 
-                setSelectedLocations((prev) => ({
-                  ...prev,
-                  to: {
-                    coords: [parseFloat(lat), parseFloat(lon)],
-                    address: value,
-                  },
-                }));
+                  setSelectedLocations((prev) => ({
+                    ...prev,
+                    to: {
+                      coords: [parseFloat(lat), parseFloat(lon)],
+                      address: value,
+                    },
+                  }));
 
-                toast.success(`Nereye: ${value}`);
-              }}
-            />
+                  toast.success(`Nereye: ${value}`);
+                }}
+              />
             </label>
 
             {mode === "box" && (
