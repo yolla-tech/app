@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  validate-dockerfiles:
+  dockerfile-validation:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,9 +20,11 @@ jobs:
         with:
           context: ./${{ matrix.service }}
           check: true
+          build-args: |
+            BUILDKIT_DOCKERFILE_CHECK=error=true
 
   build-and-test:
-    needs: validate-dockerfiles
+    needs: dockerfile-validation
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,7 +38,7 @@ jobs:
         with:
           context: ./${{ matrix.service }}
           tags: ${{ matrix.service }}:ci
-          target: ${{ matrix.service == 'frontend' && 'tester' || 'production' }}
+          target: tester
           load: true
 
       - name: Run ${{ matrix.service }} tests
@@ -46,3 +48,28 @@ jobs:
           else
             docker run --rm backend:ci pytest tests/
           fi
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and Push Production Images
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          tags: |
+            your-registry/frontend:latest
+            your-registry/frontend:${{ github.sha }}
+          push: ${{ github.event_name != 'pull_request' }}
+
+      - name: Build and Push Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          tags: |
+            your-registry/backend:latest
+            your-registry/backend:${{ github.sha }}
+          push: ${{ github.event_name != 'pull_request' }}
