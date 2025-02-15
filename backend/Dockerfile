@@ -1,18 +1,11 @@
-# Use an official Python image
-FROM python:3.10-slim
-
-# Set the working directory
+FROM python:3.13-alpine
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
+RUN apk add --no-cache gcc musl-dev libffi-dev
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the FastAPI app into the container
 COPY . .
 
-# Expose the port the app runs on
 EXPOSE 8000
-
-# Command to run the FastAPI server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

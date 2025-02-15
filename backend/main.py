@@ -11,17 +11,12 @@ from services.scraper.exceptions import ScrapperPayloadValidationException, Scra
 
 app = FastAPI()
 
-origins = [
-    "https://yolla.tech",
-    "https://www.yolla.tech",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # For development only
     allow_credentials=True,
-    allow_methods=["GET", "POST"], 
-    allow_headers=["Content-Type", "Authorization"]
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 controller = CargoSearchManager(services=[

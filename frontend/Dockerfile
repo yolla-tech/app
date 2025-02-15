@@ -1,26 +1,12 @@
-# Use the official Node.js Alpine image for a smaller build size
-FROM node:16-alpine
-
-# Set the working directory
+FROM node:18-alpine AS builder
 WORKDIR /app
-
-# Copy package.json and package-lock.json first (for better caching)
-COPY package.json package-lock.json ./
-
-# Install dependencies (omit dev dependencies for smaller image size)
-RUN npm ci --omit=dev
-
-# Copy the rest of the app's code
+COPY package*.json ./
+RUN npm install
 COPY . .
-
-# Build the React app
 RUN npm run build
 
-# Install 'serve' to serve the production build
-RUN npm install -g serve
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Serve the built app using 'serve'
-CMD ["serve", "-s", "build", "-l", "3000"]
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
