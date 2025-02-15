@@ -1,8 +1,8 @@
-name: Docker Build Validation
+name: Docker Build and Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, master]
   pull_request:
 
 jobs:
@@ -23,28 +23,28 @@ jobs:
           build-args: |
             BUILDKIT_DOCKERFILE_CHECK=error=true
 
-  full-build-test:
+  build-and-test:
     needs: validate-dockerfiles
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [frontend, backend]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Frontend
+      - name: Build ${{ matrix.service }}
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
+          context: ./${{ matrix.service }}
+          tags: ${{ matrix.service }}:ci
+          target: ${{ matrix.service == 'frontend' && 'tester' || 'default' }}
           load: true
-          tags: frontend:ci
 
-      - name: Build Backend
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          load: true
-          tags: backend:ci
-
-      - name: Run Full Test
+      - name: Run ${{ matrix.service }} tests
         run: |
-          docker run --rm frontend:ci npm test
-          docker run --rm backend:ci pytest tests/
+          if [ "${{ matrix.service }}" = "frontend" ]; then
+            docker run --rm frontend:ci npm test
+          else
+            docker run --rm backend:ci pytest tests/
+          fi
