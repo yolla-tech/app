@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-FROM python:3.13-alpine
+FROM python:3.13-alpine AS production
 WORKDIR /app
 
 RUN apk add --no-cache gcc musl-dev libffi-dev

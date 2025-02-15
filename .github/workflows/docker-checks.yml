@@ -20,8 +20,6 @@ jobs:
         with:
           context: ./${{ matrix.service }}
           check: true
-          build-args: |
-            BUILDKIT_DOCKERFILE_CHECK=error=true
 
   build-and-test:
     needs: validate-dockerfiles
@@ -38,7 +36,7 @@ jobs:
         with:
           context: ./${{ matrix.service }}
           tags: ${{ matrix.service }}:ci
-          target: ${{ matrix.service == 'frontend' && 'tester' || 'default' }}
+          target: ${{ matrix.service == 'frontend' && 'tester' || 'production' }}
           load: true
 
       - name: Run ${{ matrix.service }} tests

@@ -16,7 +16,7 @@ COPY --from=builder /app .
 RUN npm test  # This executes your tests
 
 # Production stage
-FROM nginx:alpine
+FROM nginx:alpine AS production
 COPY --from=builder /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
