@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import * as React from "react";
+import { useState, useRef, useEffect } from "react";
 import AsyncSelect from "react-select/async";
 import axios, { AxiosError } from "axios";
 import { FaEnvelope, FaBox, FaUserCircle } from "react-icons/fa";
@@ -21,7 +22,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import * as L from "leaflet";
 import customRedMarker from "./assets/marker-icon-red.png";
 import markerShadow from "./assets/marker-shadow.png";
 import "./App.css";
